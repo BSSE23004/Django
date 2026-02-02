@@ -1,3 +1,80 @@
-{% extends "base.html" %} 
-{% block title %}Contact Page{% endblock title %} 
-{%block body %} this is the contact page {% endblock body %}
+{% extends "base.html" %} {% block title %}Contact Page{% endblock title %}
+{%block body %}
+<div class="container mt-3 w-100">
+  <img
+    src="https://www.sourcesplash.com/i/random?q=telephone"
+    class="d-block w-100 img-fluid rounded h-1"
+    alt="Img1"
+    style="height: 30vh; width: 100%"
+  />
+  <h1 class="text-center mt-3">Contact Us</h1>
+  <form action="/contact/" method="post" class="mt-4">
+    {% csrf_token %}
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">@</span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Username"
+        aria-label="Username"
+        name="name"
+        aria-describedby="basic-addon1"
+      />
+    </div>
+
+    <div class="input-group mb-3">
+      <input
+        type="email"
+        class="form-control"
+        placeholder="Recipient’s Email"
+        aria-label="Recipient’s Email"
+        name="email"
+        aria-describedby="basic-addon2"
+      />
+      <span class="input-group-text" id="basic-addon2">@example.com</span>
+    </div>
+
+    <div class="mb-3">
+      <label for="basic-url" class="form-label">Your Problem URL</label>
+      <div class="input-group">
+        <span class="input-group-text" id="basic-addon3"
+          >https://example.com/users/</span
+        >
+        <input
+          type="url"
+          class="form-control"
+          id="basic-url"
+          aria-describedby="basic-addon3 basic-addon4"
+          name="ProblemURL"
+        />
+      </div>
+      <div class="form-text" id="basic-addon4">
+        Example help text goes outside the input group.
+      </div>
+    </div>
+
+    <div class="input-group mb-3">
+      <input
+        type="tel"
+        class="form-control"
+        placeholder="Phone Number"
+        aria-label="Phone Number"
+        name="phone"
+      />
+    </div>
+
+    <div class="input-group">
+      <span class="input-group-text">With textarea</span>
+      <textarea
+        class="form-control"
+        aria-label="With textarea"
+        name="message"
+      ></textarea>
+    </div>
+
+    <button class="input-group btn btn-primary mt-3" type="submit">
+      Submit
+    </button>
+  </form>
+</div>
+{% endblock body %}

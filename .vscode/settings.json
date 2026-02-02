@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "C_Cpp.autocomplete": "disabled",
+  "C_Cpp.codeFolding": "disabled",
+  "C_Cpp.configurationWarnings": "disabled",
+  "C_Cpp.sshTargetsView": "disabled",
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true
+}
