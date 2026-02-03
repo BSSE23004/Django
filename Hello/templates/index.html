@@ -1,4 +1,6 @@
 {% extends "base.html" %} {% block title %}Home Page{% endblock title %} 
+
+{% block name %}{{ Username }}{% endblock name %}
 {% block headStyle %}
 <style>
   .carousel-container {
@@ -31,8 +33,7 @@
     filter: invert(1) grayscale(1);
   }
 </style>
-{% endblock headStyle %} 
-
+{% endblock headStyle %}
 {% block body %}
 <div class="carousel-container">
   <div
