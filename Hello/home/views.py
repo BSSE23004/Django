@@ -3,26 +3,28 @@ from .models import Contact
 from datetime import date
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout, login
 
 
 # Create your views here.
 
 def checkAuthentication(request):
-    username = request.session.get('Username')
-    if not username:
+    if request.session.get('Username') is None:
+        print("User is anonymous, redirecting to login")
         return redirect('login')
-    return username
+    else:
+        username = request.session.get('Username')
+        context = {'Username': username} if username else {"Username": "Guest"}
+        print("The html of the request is:", request.session.get('template'))
+        return render(request, request.session.get('template'), context) 
 
 def index(request):
-    username = checkAuthentication(request)
-    context = {'Username': username} if username else {}
-    return render(request, 'index.html', context)
+    request.session['template'] = 'index.html'
+    return checkAuthentication(request)
 
 def about(request):
-    username = checkAuthentication(request)
-    context = {'Username': username} if username else {}
-    return render(request, 'about.html', context)
+    request.session['template'] = 'about.html'
+    return checkAuthentication(request)
 
 def contact(request):
     if request.method == "POST":
@@ -35,12 +37,14 @@ def contact(request):
         contact = Contact(name=name, email=email, phone=phone, message=message, date=date.today())
         contact.save()
         messages.success(request, 'Your form has been submitted successfully!')
-        
-    username = checkAuthentication(request)
-    context = {'Username': username} if username else {}
-    return render(request, 'contact.html', context)
+    request.session['template'] = 'contact.html' 
+    return checkAuthentication(request)
 
-def login(request):
+def pricings(request):
+    request.session['template'] = 'pricings.html'
+    return checkAuthentication(request)
+
+def loginUser(request):
     if request.method == "POST":
         print("This is a post request of login")
         username = request.POST.get('username')
@@ -50,8 +54,9 @@ def login(request):
         if user is not None:
             # A backend authenticated the credentials
             print("Authenticated Successfully")
+            login(request, user)
             request.session['Username'] = username
-            return redirect('home')
+            return redirect('index')
         else:
             # No backend authenticated the credentials
             print("Invalid Credentials, Please try again")
@@ -73,7 +78,9 @@ def signup(request):
         return redirect('login')
     return render(request, 'login.html')
 
-def logout(request):
+def logoutUser(request):
     request.session.flush()
+    logout(request)
+    print("User logged out successfully")
     return redirect('login')
             

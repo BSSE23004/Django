@@ -10,6 +10,7 @@
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
+    <link rel="icon" type="image/png" href="../static/blog.png" />
     {% block headStyle %} {% endblock headStyle %}
   </head>
   <body
@@ -23,7 +24,7 @@
   >
     <nav class="navbar navbar-expand-lg bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand text-white" href="/home"
+        <a class="navbar-brand text-white" href="/index"
           >{% block name %} Guest {% endblock %}</a
         >
         <button
@@ -43,7 +44,7 @@
               <a
                 class="nav-link active text-white"
                 aria-current="page"
-                href="/home"
+                href="/index"
                 >Home</a
               >
             </li>
@@ -71,7 +72,9 @@
                     >Web Development</a
                   >
                 </li>
-                <li><a class="dropdown-item" href="/#">Cloud Computing</a></li>
+                <li>
+                  <a class="dropdown-item" href="/pricings">Our Pricings</a>
+                </li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
                   <a class="dropdown-item" href="https://github.com/BSSE23004"
@@ -84,12 +87,19 @@
               <a class="nav-link text-white" href="/logout">Logout</a>
             </li>
           </ul>
-          <form class="d-flex" role="search">
+          <form
+            class="d-flex"
+            role="search"
+            id="pageSearchForm"
+            onsubmit="return pageSearch(event);"
+          >
             <input
               class="form-control me-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
+              id="pageSearchInput"
+              autocomplete="off"
             />
             <button class="btn btn-outline-success" type="submit">
               Search
@@ -118,5 +128,73 @@
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
+    <script>
+      function removeHighlights() {
+        document
+          .querySelectorAll(".page-search-highlight")
+          .forEach(function (el) {
+            const parent = el.parentNode;
+            parent.replaceChild(document.createTextNode(el.textContent), el);
+            parent.normalize();
+          });
+      }
+
+      function highlightAndScrollTo(term) {
+        if (!term) return false;
+        removeHighlights();
+        const body = document.body;
+        const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, {
+          acceptNode: function (node) {
+            if (
+              node.parentNode &&
+              node.parentNode.nodeType === 1 &&
+              ![
+                "SCRIPT",
+                "STYLE",
+                "NOSCRIPT",
+                "IFRAME",
+                "INPUT",
+                "TEXTAREA",
+              ].includes(node.parentNode.tagName)
+            ) {
+              return NodeFilter.FILTER_ACCEPT;
+            }
+            return NodeFilter.FILTER_REJECT;
+          },
+        });
+        let found = false;
+        let node;
+        while ((node = walker.nextNode())) {
+          const idx = node.textContent
+            .toLowerCase()
+            .indexOf(term.toLowerCase());
+          if (idx !== -1) {
+            const span = document.createElement("span");
+            span.className = "page-search-highlight";
+            span.style.background = "#ffe066";
+            span.style.color = "#000";
+            span.textContent = node.textContent.substr(idx, term.length);
+            const after = node.splitText(idx);
+            after.splitText(term.length);
+            after.parentNode.insertBefore(span, after);
+            span.scrollIntoView({ behavior: "smooth", block: "center" });
+            found = true;
+            break;
+          }
+        }
+        return found;
+      }
+
+      function pageSearch(event) {
+        event.preventDefault();
+        const term = document.getElementById("pageSearchInput").value.trim();
+        if (!term) {
+          removeHighlights();
+          return false;
+        }
+        highlightAndScrollTo(term);
+        return false;
+      }
+    </script>
   </body>
 </html>
